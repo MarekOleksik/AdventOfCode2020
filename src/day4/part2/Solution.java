@@ -41,52 +41,89 @@ public class Solution {
     }
 
     private static boolean isValidPassport(String str) {
-        boolean isValid = false;
-        boolean isByr = false;
-        boolean isIyr = false;
-        boolean isEyr = false;
-        boolean isHgt = false;
-        boolean isHcl = false;
-        boolean isEcl = false;
-        boolean isPid = false;
+        boolean isPassportValid = false;
+        boolean isByrValid = false;
+        boolean isIyrValid = false;
+        boolean isEyrValid = false;
+        boolean isHgtValid = false;
+        boolean isHclValid = false;
+        boolean isEclValid = false;
+        boolean isPidValid = false;
+        String key = "";
+        String value = "";
 
         String[] splitedStrings = str.split(" ");
         for (String s : splitedStrings) {
-            String[] sSplited = s.split(":");
-            String key = sSplited[0];
-            String value = sSplited[1];
-            for (int i = 0; i < sSplited.length; i++) {
-                switch (key) {
-                    case "byr": {
-                        if (Integer.parseInt(value) >= 1920 && Integer.parseInt(value) <= 2002) {
-                            isByr = true;
-                        }
+            String[] sSplited = s.trim().split(":");
+
+            if (sSplited.length == 2) {
+                key = sSplited[0];
+                value = sSplited[1];
+            }
+
+            switch (key) {
+                case "byr": {
+                    if (Integer.parseInt(value) >= 1920 && Integer.parseInt(value) <= 2002) {
+                        isByrValid = true;
                     }
-                        break;
-                    case "iyr": {
-                        if (Integer.parseInt(value) >=2010 && Integer.parseInt(value) <= 2020) {
-                            isIyr = true;
-                        }
-                    }
-                        break;
-                    case "eyr": if (Integer.parseInt(value) >=2020 && Integer.parseInt(value) <= 2030) {
-                        isIyr = true;
-                    }
-                        break;
-                    case "hgt": isHgt = true;
-                        break;
-                    case "hcl": isHcl = true;
-                        break;
-                    case "ecl": isEcl = true;
-                        break;
-                    case "pid": isPid = true;
-                        break;
                 }
+                break;
+                case "iyr": {
+                    if (Integer.parseInt(value) >= 2010 && Integer.parseInt(value) <= 2020) {
+                        isIyrValid = true;
+                    }
+                }
+                break;
+                case "eyr": {
+                    if (Integer.parseInt(value) >= 2020 && Integer.parseInt(value) <= 2030) {
+                        isEyrValid = true;
+                    }
+                }
+                break;
+                case "hgt": {
+                    int heightInCm = getUnitValue(value, "cm");
+                    int heightInInch = getUnitValue(value, "in");
+                    if ((heightInCm >= 150 && heightInCm <= 193) || (heightInInch >= 59 && heightInInch <= 76)) {
+                        isHgtValid = true;
+                    }
+                }
+                break;
+                case "hcl": {
+                    if (value.matches("#[0-9,a-f]{6}")) {
+                        isHclValid = true;
+                    }
+                }
+                break;
+                case "ecl": {
+                    if ("amb".equals(value) || "blu".equals(value) || "brn".equals(value) || "gry".equals(value) ||
+                            "grn".equals(value) || "hzl".equals(value) || "oth".equals(value)) {
+                        isEclValid = true;
+                    }
+                }
+                break;
+                case "pid": {
+                    if (value.matches("[0-9]{9}")) {
+                        isPidValid = true;
+                    }
+                }
+                break;
             }
         }
-        if (isByr && isIyr && isEyr && isHgt && isHcl && isEcl && isPid) {
-            isValid = true;
+
+        if (isByrValid && isIyrValid && isEyrValid && isHgtValid && isHclValid && isEclValid && isPidValid) {
+            isPassportValid = true;
         }
-        return isValid;
+
+        return isPassportValid;
+    }
+
+
+    private static int getUnitValue(String value, String unit) {
+        int unitValue = 0;
+        if (value.contains(unit)) {
+            String[] height = value.split(unit);
+            unitValue = Integer.parseInt(height[0]);
+        }
+        return unitValue;
     }
 }
