@@ -55,6 +55,8 @@ public class Solution {
         }
 
         System.out.println("At least one shiny gold bag contains: " + bagColors + " bag colors");
+
+        System.out.print("Part 2: " + (countBagsInGoldBag("shiny gold") - 1) + ", ");
     }
 
     private static boolean isContainShinyGoldBag(String bag) {
@@ -71,5 +73,14 @@ public class Solution {
         }
 
         return false;
+    }
+
+    private static int countBagsInGoldBag(String bag)
+    {
+        List<ChildrenBags> bagList = mapOfBags.get(bag);
+        int count = 1;
+        for(ChildrenBags bagInfo : bagList)
+            count += (bagInfo.getQuantityOfBags() * countBagsInGoldBag(bagInfo.getNameOfBags()));
+        return count;
     }
 }
